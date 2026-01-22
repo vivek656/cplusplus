@@ -126,24 +126,25 @@ vector<int> suffixArray(string &s) {
 //aa aaab
 // aaa
 vector<int> sameArrayWithOrderAndLengthAtleast(string &s , vector<int> &p , int size) {
-    vector<int> resultant(p.size());
+    vector<int> resultant;
+    resultant.reserve(p.size());
     int idx = 0;
     int sSize = s.size();
     for(auto const &i : p){
         if ((sSize - i ) >= size) {
-            resultant[idx] = i;
+            resultant.push_back(i);
             idx++;
         }
     }
-    resultant.shrink_to_fit();
+    resultant.resize(idx);
     return resultant;
 }
 
 int compare(string &s , int start , string &subtring){
     
-    for (int i = start ; i < subtring.size() ; i ++ ){
-        if (s[i] - subtring[i - start] != 0) {
-            return s[i] - subtring[i-start];
+    for (int i = 0 ; i < subtring.size() ; i ++ ){
+        if (s[i+start] - subtring[i] != 0) {
+            return s[i+start] - subtring[i];
         }
     }
     return 0;
@@ -154,26 +155,25 @@ bool has(string &s, vector<int> &permute , string &substring){
     vector<int> permutetoSize=  sameArrayWithOrderAndLengthAtleast(s, permute,substring.size());
     if(permutetoSize.size() == 0) return false;
     int low = 0;
-    int high = permutetoSize.size();
+    int high = permutetoSize.size()-1;
     
 
-    while(low < high) {
-        int middle = (high + low )/ 2;
+    while(low <= high) {
+        int middle = low + (high - low) / 2;     
         int middelP = permutetoSize[middle];
         int middleCompare = compare(s, middelP, substring);
         if(middleCompare == 0) return true;
 
         else if (middleCompare > 0){
-            high = middle;
+            high = middle-1;
         } else {
-            low = middle;
+            low = middle+1;
         }    
     }
     return false;
 }
 
-int main()
-{
+int main(){
      ios::sync_with_stdio(false);
     cin.tie(0);
 
@@ -188,9 +188,11 @@ int main()
     }
 
     vector<int> permute = suffixArray(s);
-
+    s.pop_back();
+    permute.erase(permute.begin());
     for (auto  &ss : strings) {
-        has(s, permute, ss) ? cout << "Yes" : cout << "no";
+        bool hass = has(s, permute, ss);
+        hass ? cout << "Yes" : cout << "No";
         cout << '\n';
     }
 }
