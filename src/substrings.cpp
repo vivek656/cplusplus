@@ -140,9 +140,15 @@ vector<int> sameArrayWithOrderAndLengthAtleast(string &s , vector<int> &p , int 
     return resultant;
 }
 
+// ababba
+// babba
+// $
+// a
+// abba
+// 
 int compare(string &s , int start , string &subtring){
-    
     for (int i = 0 ; i < subtring.size() ; i ++ ){
+        if((i + start) >= s.size()) return -1;
         if (s[i+start] - subtring[i] != 0) {
             return s[i+start] - subtring[i];
         }
@@ -151,16 +157,14 @@ int compare(string &s , int start , string &subtring){
 }
 
 bool has(string &s, vector<int> &permute , string &substring){
-
-    vector<int> permutetoSize=  sameArrayWithOrderAndLengthAtleast(s, permute,substring.size());
-    if(permutetoSize.size() == 0) return false;
+    if(permute.size() == 0) return false;
     int low = 0;
-    int high = permutetoSize.size()-1;
+    int high = permute.size()-1;
     
-
+     
     while(low <= high) {
         int middle = low + (high - low) / 2;     
-        int middelP = permutetoSize[middle];
+        int middelP = permute[middle];
         int middleCompare = compare(s, middelP, substring);
         if(middleCompare == 0) return true;
 
