@@ -156,17 +156,27 @@ int compare(string &s , int start , string &subtring){
     return 0;
 }
 
-bool has(string &s, vector<int> &permute , string &substring){
+// a
+// aa
+// aaa
+// aaaa
+int count(string &s, vector<int> &permute , string &substring){
     if(permute.size() == 0) return false;
     int low = 0;
     int high = permute.size()-1;
+    int count = 0 ;
     
-
+    int lowest = s.size() +1;
+    bool has = false;
     while(low <= high) {
         int middle = low + (high - low) / 2;     
         int middelP = permute[middle];
         int middleCompare = compare(s, middelP, substring);
-        if(middleCompare == 0) return true;
+        if(middleCompare == 0) {
+            lowest = middle;
+            high = middle-1;
+            has = true;
+        }
 
         else if (middleCompare > 0){
             high = middle-1;
@@ -174,7 +184,26 @@ bool has(string &s, vector<int> &permute , string &substring){
             low = middle+1;
         }    
     }
-    return false;
+    if(!has) return 0;
+    low = 0;
+    high = permute.size()-1;
+    int highest = s.size() +1;
+    while(low <= high) {
+        int middle = low + (high - low) / 2;     
+        int middelP = permute[middle];
+        int middleCompare = compare(s, middelP, substring);
+        if(middleCompare == 0) {
+            highest = middle;
+            low = middle+1;
+        }
+
+        else if (middleCompare > 0){
+            high = middle-1;
+        } else {
+            low = middle+1;
+        }    
+    }
+    return highest - lowest +1;
 }
 
 int main(){
@@ -195,8 +224,7 @@ int main(){
     s.pop_back();
     permute.erase(permute.begin());
     for (auto  &ss : strings) {
-        bool hass = has(s, permute, ss);
-        hass ? cout << "Yes" : cout << "No";
-        cout << '\n';
+        int c = count(s, permute, ss);
+        cout << c<< '\n';
     }
 }
